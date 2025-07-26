@@ -13,6 +13,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -31,7 +32,10 @@ public abstract class AbstractIT {
     protected TestRestTemplate restTemplate;
 
     @Autowired
-    protected MockMvcTester mvc;
+    protected MockMvc mvc;
+
+    @Autowired
+    protected MockMvcTester mockMvcTester;
 
     @Autowired
     private JwtTokenHelper jwtTokenHelper;

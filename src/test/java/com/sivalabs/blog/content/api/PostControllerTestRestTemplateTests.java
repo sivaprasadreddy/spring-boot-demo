@@ -26,7 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 
 @Sql("/test-data.sql")
-class PostControllerTests extends AbstractIT {
+class PostControllerTestRestTemplateTests extends AbstractIT {
 
     @Test
     void shouldGetPosts() {

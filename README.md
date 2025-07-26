@@ -39,8 +39,11 @@ Run `src/main/java/com/sivalabs/blog/BlogApiApplication.java` from IDE.
 * Application: http://localhost:8080
 * Swagger UI: http://localhost:8080/swagger-ui/index.html
 
+## UseCase Specifications
+Explore all the UseCase specifications [here](docs/specs)
+
 ## API Endpoints
-Explore all the API endpoints [here](api-endpoints.md)
+Explore all the API endpoints [here](docs/api-endpoints.md)
 
 ## Generating certs
 

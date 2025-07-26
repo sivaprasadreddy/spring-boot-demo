@@ -9,9 +9,9 @@ services:
     ports:
       - "5432"
 
-  spring-boot-blog-api:
-    image: sivaprasadreddy/spring-boot-blog-api
-    container_name: spring-boot-blog-api
+  spring-boot-demo:
+    image: sivaprasadreddy/spring-boot-demo
+    container_name: spring-boot-demo
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver

@@ -1,4 +1,4 @@
-# Spring Boot Blog REST API
+# Spring Boot Demo
 
 A simple Blog REST API using SpringBoot.
 
@@ -20,8 +20,8 @@ $ sdk install maven
 
 ```shell
 # Clone the repository
-$ git clone https://github.com/sivaprasadreddy/spring-boot-blog-api.git
-$ cd spring-boot-blog-api/blog
+$ git clone https://github.com/sivaprasadreddy/spring-boot-demo.git
+$ cd spring-boot-demo
 
 # Run tests
 $ ./mvnw test
@@ -30,7 +30,7 @@ $ ./mvnw test
 $ ./mvnw spotless:apply
 
 # Run/Debug application from IDE
-Run `src/main/java/com/sivalabs/blog/BlogApiApplication.java` from IDE.
+Run `src/main/java/com/sivalabs/blog/BlogApplication.java` from IDE.
 
 # Run application using Maven
 ./mvnw spring-boot:run

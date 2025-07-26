@@ -80,10 +80,6 @@
             <version>${p6spy-spring-boot-starter.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${org.mapstruct.version}</version>
@@ -91,19 +87,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-registry-prometheus</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-tracing-bridge-otel</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.opentelemetry</groupId>
-            <artifactId>opentelemetry-exporter-zipkin</artifactId>
         </dependency>
 
         <!-- Dev dependencies -->
@@ -194,31 +177,8 @@
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <dependencies>
-                    <dependency>
-                        <groupId>me.fabriciorby</groupId>
-                        <artifactId>maven-surefire-junit5-tree-reporter</artifactId>
-                        <version>1.4.0</version>
-                    </dependency>
-                </dependencies>
                 <configuration>
                     <forkedProcessExitTimeoutInSeconds>5</forkedProcessExitTimeoutInSeconds>
-                    <reportFormat>plain</reportFormat>
-                    <consoleOutputReporter>
-                        <disable>true</disable>
-                    </consoleOutputReporter>
-                    <statelessTestsetInfoReporter
-                            implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5StatelessTestsetInfoTreeReporter">
-                        <theme>UNICODE</theme>
-                        <printStacktraceOnError>true</printStacktraceOnError>
-                        <printStacktraceOnFailure>true</printStacktraceOnFailure>
-                        <printStdoutOnError>true</printStdoutOnError>
-                        <printStdoutOnFailure>true</printStdoutOnFailure>
-                        <printStdoutOnSuccess>false</printStdoutOnSuccess>
-                        <printStderrOnError>true</printStderrOnError>
-                        <printStderrOnFailure>true</printStderrOnFailure>
-                        <printStderrOnSuccess>false</printStderrOnSuccess>
-                    </statelessTestsetInfoReporter>
                 </configuration>
             </plugin>
             <plugin>

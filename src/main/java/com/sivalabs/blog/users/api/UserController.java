@@ -14,9 +14,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api/users")
 @Tag(name = "Users API")
 class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
@@ -27,7 +29,7 @@ class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/api/users")
+    @PostMapping("")
     ResponseEntity<RegistrationResponse> createUser(@RequestBody @Valid RegistrationRequest req) {
         log.info("Registration request for email: {}", req.email());
         var cmd = new CreateUserCmd(req.name(), req.email(), req.password(), Role.ROLE_USER);

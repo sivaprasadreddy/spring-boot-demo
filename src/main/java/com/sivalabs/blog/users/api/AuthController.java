@@ -13,9 +13,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api")
 @Tag(name = "Auth API")
 class AuthController {
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
@@ -30,7 +32,7 @@ class AuthController {
         this.userMapper = userMapper;
     }
 
-    @PostMapping("/api/login")
+    @PostMapping("/login")
     LoginResponse login(@RequestBody @Valid LoginRequest req) {
         log.info("Login request for email: {}", req.email());
         var user = userService

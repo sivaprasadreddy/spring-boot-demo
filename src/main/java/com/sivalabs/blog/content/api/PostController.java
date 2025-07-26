@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -81,8 +80,8 @@ class PostController {
     }
 
     @PostMapping("/{slug}/comments")
-    @ResponseStatus(HttpStatus.CREATED)
-    void createComment(@PathVariable(value = "slug") String slug, @Valid @RequestBody CreateCommentPayload payload) {
+    ResponseEntity<Void> createComment(
+            @PathVariable(value = "slug") String slug, @Valid @RequestBody CreateCommentPayload payload) {
         log.info("Create comment for post with slug: '{}'", slug);
         PostDto postDto = postService
                 .findPostBySlug(slug)
@@ -90,6 +89,7 @@ class PostController {
                 .orElseThrow(() -> new ResourceNotFoundException("Post with slug '" + slug + "' not found"));
         var createdCommentCmd = new CreateCommentCmd(payload.name, payload.email, payload.content, postDto.id());
         postService.createComment(createdCommentCmd);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     record CreateCommentPayload(

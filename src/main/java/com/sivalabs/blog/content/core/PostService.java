@@ -3,7 +3,6 @@ package com.sivalabs.blog.content.core;
 import com.sivalabs.blog.ApplicationProperties;
 import com.sivalabs.blog.content.core.models.CreateCommentCmd;
 import com.sivalabs.blog.content.core.models.CreatePostCmd;
-import com.sivalabs.blog.content.core.models.PostProjection;
 import com.sivalabs.blog.content.core.models.UpdatePostCmd;
 import com.sivalabs.blog.content.events.BlogEventPublisher;
 import com.sivalabs.blog.content.events.PostPublishedEvent;
@@ -44,31 +43,31 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public PagedResult<PostProjection> findPosts(Integer pageNo) {
+    public PagedResult<Post> findPosts(Integer pageNo) {
         Pageable pageable = this.getPageRequest(pageNo);
-        Page<PostProjection> posts = postRepository.findPosts(pageable);
+        Page<Post> posts = postRepository.findPosts(pageable);
         return PagedResult.from(posts);
     }
 
     @Transactional(readOnly = true)
-    public PagedResult<PostProjection> searchPosts(String query, Integer pageNo) {
+    public PagedResult<Post> searchPosts(String query, Integer pageNo) {
         Pageable pageable = this.getPageRequest(pageNo);
-        Page<PostProjection> posts = postRepository.searchPosts("%" + query.toLowerCase() + "%", pageable);
+        Page<Post> posts = postRepository.searchPosts("%" + query.toLowerCase() + "%", pageable);
         return PagedResult.from(posts);
     }
 
     @Transactional(readOnly = true)
-    public List<PostProjection> findPostsCreatedBetween(LocalDateTime start, LocalDateTime end) {
+    public List<Post> findPostsCreatedBetween(LocalDateTime start, LocalDateTime end) {
         return postRepository.findByCreatedDate(start, end);
     }
 
     @Transactional(readOnly = true)
-    public Optional<PostProjection> findPostBySlug(String slug) {
+    public Optional<Post> findPostBySlug(String slug) {
         return postRepository.findBySlug(slug);
     }
 
     @Transactional(readOnly = true)
-    public Optional<PostProjection> findPostById(Long postId) {
+    public Optional<Post> findPostById(Long postId) {
         return postRepository.findPostById(postId);
     }
 

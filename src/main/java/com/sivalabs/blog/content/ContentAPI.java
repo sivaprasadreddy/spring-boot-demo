@@ -1,7 +1,7 @@
 package com.sivalabs.blog.content;
 
 import com.sivalabs.blog.content.core.PostService;
-import com.sivalabs.blog.content.core.models.PostProjection;
+import com.sivalabs.blog.shared.entities.Post;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ public class ContentAPI {
         this.postService = postService;
     }
 
-    public List<PostProjection> findPostsCreatedBetween(LocalDateTime startOfWeek, LocalDateTime end) {
+    public List<Post> findPostsCreatedBetween(LocalDateTime startOfWeek, LocalDateTime end) {
         return postService.findPostsCreatedBetween(startOfWeek, end);
     }
 }

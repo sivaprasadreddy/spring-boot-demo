@@ -1,8 +1,8 @@
 package com.sivalabs.blog.jobs;
 
 import com.sivalabs.blog.content.ContentAPI;
-import com.sivalabs.blog.content.core.models.PostProjection;
 import com.sivalabs.blog.notification.EmailService;
+import com.sivalabs.blog.shared.entities.Post;
 import com.sivalabs.blog.shared.entities.User;
 import com.sivalabs.blog.users.UsersAPI;
 import java.time.DayOfWeek;
@@ -33,7 +33,7 @@ class WeeklyEmailSenderJob {
         log.info("Sending newsletter at {}", Instant.now());
         LocalDateTime end = LocalDateTime.now();
         LocalDateTime startOfWeek = LocalDate.now().with(DayOfWeek.MONDAY).atStartOfDay();
-        List<PostProjection> posts = contentAPI.findPostsCreatedBetween(startOfWeek, end);
+        List<Post> posts = contentAPI.findPostsCreatedBetween(startOfWeek, end);
         if (posts.isEmpty()) {
             log.info("No posts found for this week. Skipping newsletter");
             return;
@@ -49,9 +49,9 @@ class WeeklyEmailSenderJob {
         log.info("Sent newsletter at {} to {} users", Instant.now(), userEmails.size());
     }
 
-    private String createNewsLetterContent(List<PostProjection> posts) {
+    private String createNewsLetterContent(List<Post> posts) {
         StringBuilder emailContent = new StringBuilder();
-        for (PostProjection post : posts) {
+        for (Post post : posts) {
             // Externalize base url
             String postUrl = "http://localhost:8080/blog/posts/" + post.getSlug();
             var fragment =

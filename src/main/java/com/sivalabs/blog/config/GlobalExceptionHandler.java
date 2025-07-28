@@ -1,12 +1,13 @@
 package com.sivalabs.blog.config;
 
+import static org.springframework.http.HttpStatus.*;
+
 import com.sivalabs.blog.shared.exceptions.BadRequestException;
 import com.sivalabs.blog.shared.exceptions.ResourceNotFoundException;
-import java.util.List;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -16,14 +17,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-@RestControllerAdvice(basePackageClasses = GlobalExceptionHandler.class)
+@RestControllerAdvice
 class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    ResponseEntity<Object> handle(Exception e) {
-        var errors = List.of(e.getMessage());
-        ApiErrors apiErrors = ApiErrors.from(errors);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiErrors);
+    ProblemDetail handle(Exception e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(INTERNAL_SERVER_ERROR, e.getMessage());
+        problemDetail.setTitle("Internal Server Error");
+        return problemDetail;
     }
 
     @Override
@@ -32,43 +33,36 @@ class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         var errors = ex.getAllErrors().stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .toList();
-        ApiErrors apiErrors = ApiErrors.from(errors);
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(apiErrors);
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(UNAUTHORIZED, String.join(", ", errors));
+        problemDetail.setTitle("Bad Request");
+        return ResponseEntity.status(UNPROCESSABLE_ENTITY).body(problemDetail);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<Object> handle(BadCredentialsException e) {
-        var errors = List.of(e.getMessage());
-        ApiErrors apiErrors = ApiErrors.from(errors);
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiErrors);
+    ProblemDetail handle(BadCredentialsException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(UNAUTHORIZED, e.getMessage());
+        problemDetail.setTitle("Unauthorized");
+        return problemDetail;
     }
 
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<Object> handle(BadRequestException e) {
-        var errors = List.of(e.getMessage());
-        ApiErrors apiErrors = ApiErrors.from(errors);
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(apiErrors);
+    public ProblemDetail handle(BadRequestException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(UNPROCESSABLE_ENTITY, e.getMessage());
+        problemDetail.setTitle("Bad Request");
+        return problemDetail;
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Object> handle(ResourceNotFoundException e) {
-        var errors = List.of(e.getMessage());
-        ApiErrors apiErrors = ApiErrors.from(errors);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiErrors);
+    public ProblemDetail handle(ResourceNotFoundException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(NOT_FOUND, e.getMessage());
+        problemDetail.setTitle("Resource Not Found");
+        return problemDetail;
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<Object> handle(AccessDeniedException e) {
-        var errors = List.of(e.getMessage());
-        ApiErrors apiErrors = ApiErrors.from(errors);
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiErrors);
+    public ProblemDetail handle(AccessDeniedException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(FORBIDDEN, e.getMessage());
+        problemDetail.setTitle("Access Denied");
+        return problemDetail;
     }
-
-    record ApiErrors(Errors errors) {
-        public static ApiErrors from(List<String> body) {
-            return new ApiErrors(new Errors(body));
-        }
-    }
-
-    record Errors(List<String> body) {}
 }

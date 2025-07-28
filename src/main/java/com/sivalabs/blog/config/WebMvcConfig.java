@@ -1,7 +1,9 @@
 package com.sivalabs.blog.config;
 
 import com.sivalabs.blog.ApplicationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.filter.UrlHandlerFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -20,5 +22,10 @@ class WebMvcConfig implements WebMvcConfigurer {
                 .allowedOriginPatterns(corsProperties.allowedOrigins())
                 .allowedMethods(corsProperties.allowedMethods())
                 .allowedHeaders(corsProperties.allowedHeaders());
+    }
+
+    @Bean
+    UrlHandlerFilter urlHandlerFilter() {
+        return UrlHandlerFilter.trailingSlashHandler("/**").wrapRequest().build();
     }
 }

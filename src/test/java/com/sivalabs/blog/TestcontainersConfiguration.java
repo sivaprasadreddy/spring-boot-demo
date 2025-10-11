@@ -13,7 +13,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 public class TestcontainersConfiguration {
     @Container
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:17-alpine");
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:18-alpine");
 
     @Container
     static GenericContainer<?> mailhog = new GenericContainer<>("mailhog/mailhog:v1.0.1").withExposedPorts(1025);

@@ -82,7 +82,8 @@ public class PostService {
         entity.setCreatedBy(user);
         postRepository.save(entity);
 
-        var event = new PostPublishedEvent(entity.getTitle(), entity.getSlug(), entity.getContent());
+        var event =
+                new PostPublishedEvent(entity.getTitle(), entity.getSlug(), entity.getContent(), LocalDateTime.now());
         blogEventPublisher.publish(event);
     }
 

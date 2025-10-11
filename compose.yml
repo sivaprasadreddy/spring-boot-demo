@@ -9,6 +9,15 @@ services:
     ports:
       - "5432"
 
+  mongodb:
+    image: 'mongo:8.0.0'
+    environment:
+      - 'MONGO_INITDB_ROOT_USERNAME=root'
+      - 'MONGO_INITDB_ROOT_PASSWORD=secret'
+      - 'MONGO_INITDB_DATABASE=blog'
+    ports:
+      - '27017'
+
   spring-boot-demo:
     image: sivaprasadreddy/spring-boot-demo
     container_name: spring-boot-demo

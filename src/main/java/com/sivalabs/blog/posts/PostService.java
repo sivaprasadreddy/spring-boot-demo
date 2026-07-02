@@ -1,12 +1,15 @@
 package com.sivalabs.blog.posts;
 
 import com.sivalabs.blog.ApplicationProperties;
+import com.sivalabs.blog.shared.BadRequestException;
 import com.sivalabs.blog.shared.ResourceNotFoundException;
 import com.sivalabs.blog.shared.PagedResult;
-import com.sivalabs.blog.users.UsersAPI;
+
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,104 +20,72 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PostService {
     private final PostRepository postRepository;
-    private final CommentRepository commentRepository;
-    private final UsersAPI usersAPI;
-    private final BlogEventPublisher blogEventPublisher;
+    private final ApplicationEventPublisher eventPublisher;
     private final ApplicationProperties properties;
+    private final PostMapper postMapper;
 
     PostService(
             PostRepository postRepository,
-            CommentRepository commentRepository,
-            UsersAPI usersAPI,
-            BlogEventPublisher blogEventPublisher,
-            ApplicationProperties properties) {
+            ApplicationEventPublisher eventPublisher,
+            ApplicationProperties properties,
+            PostMapper postMapper) {
         this.postRepository = postRepository;
-        this.commentRepository = commentRepository;
-        this.usersAPI = usersAPI;
-        this.blogEventPublisher = blogEventPublisher;
+        this.eventPublisher = eventPublisher;
         this.properties = properties;
+        this.postMapper = postMapper;
     }
 
     @Transactional(readOnly = true)
-    public PagedResult<Post> findPosts(Integer pageNo) {
+    public PagedResult<PostDto> findPosts(Integer pageNo, String query) {
         Pageable pageable = this.getPageRequest(pageNo);
-        Page<Post> posts = postRepository.findPosts(pageable);
+        Page<PostDto> posts;
+        if (query == null || query.trim().isEmpty()) {
+            posts = postRepository.findPosts(pageable).map(postMapper::toPostDto);
+        } else {
+            posts = postRepository.searchPosts("%" + query.toLowerCase() + "%", pageable).map(postMapper::toPostDto);
+        }
         return PagedResult.from(posts);
     }
 
     @Transactional(readOnly = true)
-    public PagedResult<Post> searchPosts(String query, Integer pageNo) {
-        Pageable pageable = this.getPageRequest(pageNo);
-        Page<Post> posts = postRepository.searchPosts("%" + query.toLowerCase() + "%", pageable);
-        return PagedResult.from(posts);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Post> findPostsCreatedBetween(LocalDateTime start, LocalDateTime end) {
-        return postRepository.findByCreatedDate(start, end);
-    }
-
-    @Transactional(readOnly = true)
-    public Optional<Post> findPostBySlug(String slug) {
-        return postRepository.findBySlug(slug);
-    }
-
-    @Transactional(readOnly = true)
-    public Optional<Post> findPostById(Long postId) {
-        return postRepository.findPostById(postId);
+    public Optional<PostDto> findBySlug(String slug) {
+        return postRepository.findBySlug(slug).map(postMapper::toPostDto);
     }
 
     @Transactional
-    public void createPost(CreatePostCmd cmd) {
-        var user = usersAPI.findUserById(cmd.createdBy()).orElseThrow();
-
-        var entity = new Post();
-        entity.setTitle(cmd.title());
-        entity.setSlug(cmd.slug());
-        entity.setContent(cmd.content());
-        entity.setCreatedBy(user);
-        postRepository.save(entity);
-
-        var event =
-                new PostPublishedEvent(entity.getTitle(), entity.getSlug(), entity.getContent(), LocalDateTime.now());
-        blogEventPublisher.publish(event);
+    public void createPost(Post post) {
+        if(this.isPostSlugExists(post.getSlug())) {
+            throw new BadRequestException("Post with slug '" + post.getSlug() + "' already exists");
+        }
+        post.setId(null);
+        postRepository.save(post);
+        var event = new PostPublishedEvent(post.getTitle(), post.getSlug(), post.getContent(), LocalDateTime.now());
+        eventPublisher.publishEvent(event);
     }
 
     @Transactional
-    public void updatePost(UpdatePostCmd cmd) {
+    public void updatePost(Long postId, Post post) {
         var entity = postRepository
-                .findById(cmd.id())
-                .orElseThrow(() -> new ResourceNotFoundException("Post with id " + cmd.id() + " not found"));
-        entity.setTitle(cmd.title());
-        entity.setSlug(cmd.slug());
-        entity.setContent(cmd.content());
+                .findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post with id " + post.getId() + " not found"));
+        var updatedSlug = post.getSlug();
+        Optional<PostDto> postBySlug = this.findBySlug(updatedSlug);
+        if (postBySlug.isPresent() && !Objects.equals(postBySlug.get().id(), entity.getId())) {
+            throw new BadRequestException("Post with slug '" + updatedSlug + "' already exists");
+        }
+        entity.setTitle(post.getTitle());
+        entity.setSlug(post.getSlug());
+        entity.setContent(post.getContent());
         postRepository.save(entity);
     }
 
-    @Transactional(readOnly = true)
-    public boolean isPostSlugExists(String slug) {
+    private boolean isPostSlugExists(String slug) {
         return postRepository.existsBySlug(slug);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Comment> getCommentsByPostId(Long postId) {
-        return commentRepository.findByPostId(postId);
-    }
-
-    @Transactional
-    public void createComment(CreateCommentCmd cmd) {
-        var post = postRepository.getReferenceById(cmd.postId());
-        var entity = new Comment();
-        entity.setName(cmd.name());
-        entity.setEmail(cmd.email());
-        entity.setContent(cmd.content());
-        entity.setPost(post);
-        commentRepository.save(entity);
     }
 
     private Pageable getPageRequest(Integer pageNo) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
-        int pageSize = properties.postsPerPage();
+        int pageSize = properties.postsPageSize();
         if (pageNo == null || pageNo < 1) {
             pageNo = 1;
         }

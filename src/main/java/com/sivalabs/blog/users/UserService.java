@@ -2,18 +2,23 @@ package com.sivalabs.blog.users;
 
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class UserService {
+class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
-    UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    UserService(UserRepository userRepository,
+                PasswordEncoder passwordEncoder,
+                UserMapper userMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userMapper = userMapper;
     }
 
     @Transactional(readOnly = true)
@@ -22,27 +27,26 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<User> findAllUsers() {
-        return userRepository.findAll();
+    public List<UserDto> findAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::toUserDto)
+                .toList();
     }
 
     @Transactional(readOnly = true)
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmailIgnoreCase(email);
-    }
-
-    @Transactional(readOnly = true)
-    public Optional<User> login(String email, String password) {
-        return findByEmail(email).filter(user -> passwordEncoder.matches(password, user.getPassword()));
+    public Optional<UserDto> findByEmail(String email) {
+        return userRepository
+                .findByEmailIgnoreCase(email)
+                .map(userMapper::toUserDtoWithPassword);
     }
 
     @Transactional
-    public void createUser(CreateUserCmd cmd) {
-        var user = new User();
-        user.setName(cmd.name());
-        user.setEmail(cmd.email());
-        user.setPassword(passwordEncoder.encode(cmd.password()));
-        user.setRole(cmd.role());
-        userRepository.save(user);
+    public UserDto createUser(User user) {
+        user.setId(null);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole(Role.ROLE_USER);
+        var saved = userRepository.save(user);
+        return userMapper.toUserDto(saved);
     }
 }

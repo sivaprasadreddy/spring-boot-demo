@@ -4,9 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface BlogMapper {
-    @Mapping(target = "createdByUserName", source = "createdBy.name")
+interface PostMapper {
+    @Mapping(target = "author", source = "createdBy.name")
     PostDto toPostDto(Post p);
-
-    CommentDto toCommentDto(Comment cmd);
 }

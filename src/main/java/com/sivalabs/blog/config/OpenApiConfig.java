@@ -1,6 +1,5 @@
 package com.sivalabs.blog.config;
 
-import com.sivalabs.blog.ApplicationProperties;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
@@ -12,29 +11,32 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 class OpenApiConfig {
+    private final String securitySchemeName = "basicAuth";
 
     @Bean
-    OpenAPI openApi(ApplicationProperties properties) {
-        var openApiProps = properties.openApi();
-        Contact contact = new Contact()
-                .name(openApiProps.contact().name())
-                .email(openApiProps.contact().email());
-        Info info = new Info()
-                .title(openApiProps.title())
-                .description(openApiProps.description())
-                .version(openApiProps.version())
-                .contact(contact);
+    OpenAPI openApi() {
         return new OpenAPI()
-                .info(info)
-                .addSecurityItem(new SecurityRequirement().addList("Authorization"))
-                .components(new Components().addSecuritySchemes("Bearer", createJwtTokenScheme()));
+            .info(info())
+            .addSecurityItem(new SecurityRequirement().addList("Authorization"))
+            .components(
+                new Components()
+                    .addSecuritySchemes(securitySchemeName, createBasicAuthScheme())
+            );
     }
 
-    private SecurityScheme createJwtTokenScheme() {
+    private Info info() {
+        Contact contact = new Contact().name("SivaLabs").email("support@sivalabs.in");
+        return new Info()
+                .title("Blog API")
+                .description("Blog API Swagger Documentation")
+                .version("v1.0.0")
+                .contact(contact);
+    }
+
+    private SecurityScheme createBasicAuthScheme() {
         return new SecurityScheme()
-                .name("Authorization")
+                .name(securitySchemeName)
                 .type(SecurityScheme.Type.HTTP)
-                .bearerFormat("JWT")
-                .scheme("Bearer");
+                .scheme("basic");
     }
 }

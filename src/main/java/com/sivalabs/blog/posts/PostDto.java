@@ -1,6 +1,5 @@
 package com.sivalabs.blog.posts;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDateTime;
 
 public record PostDto(
@@ -8,12 +7,7 @@ public record PostDto(
         String title,
         String slug,
         String content,
-        String createdByUserName,
+        String author,
         LocalDateTime createdAt,
         LocalDateTime updatedAt) {
-
-    @JsonIgnore
-    public String getShortDescription() {
-        return content.length() > 200 ? content.substring(0, 200) + "..." : content;
-    }
 }

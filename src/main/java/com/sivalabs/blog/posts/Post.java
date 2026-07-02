@@ -26,6 +26,23 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
 
+    public Post() {}
+
+    public Post(String title, String slug, String content, User createdBy) {
+        this.title = title;
+        this.slug = slug;
+        this.content = content;
+        this.createdBy = createdBy;
+    }
+
+    public Post(Long id, String title, String slug, String content, User createdBy) {
+        this.id = id;
+        this.title = title;
+        this.slug = slug;
+        this.content = content;
+        this.createdBy = createdBy;
+    }
+
     public Long getId() {
         return id;
     }

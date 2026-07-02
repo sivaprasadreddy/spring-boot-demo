@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -32,6 +33,9 @@ class WebSecurityConfig {
         http.securityMatcher("/api/**");
         http.csrf(CsrfConfigurer::disable);
         http.cors(CorsConfigurer::disable);
+        http.httpBasic(Customizer.withDefaults());
+        http.exceptionHandling(c -> c.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.authorizeHttpRequests(c -> c.requestMatchers(PUBLIC_RESOURCES)
                 .permitAll()
@@ -39,18 +43,14 @@ class WebSecurityConfig {
                 .permitAll()
                 .requestMatchers("/api/login")
                 .permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/users")
+                .hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/users")
                 .permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/**")
                 .permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/posts/*/comments")
-                .permitAll()
                 .anyRequest()
                 .authenticated());
-
-        http.oauth2ResourceServer(c -> c.jwt(Customizer.withDefaults()));
-        http.exceptionHandling(c -> c.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
-        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }

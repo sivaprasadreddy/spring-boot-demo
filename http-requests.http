@@ -14,19 +14,12 @@ Content-Type: application/json
     });
 %}
 
-### Login
-POST http://localhost:8080/api/login
-Content-Type: application/json
-
-{
-  "email": "siva@gmail.com",
-  "password": "siva"
-}
+### Get all users
+GET http://localhost:8080/api/users
 
 > {%
-    client.test("Login request executed successfully", function () {
+    client.test("Get all users executed successfully", function () {
         client.assert(response.status === 200, "Response status is not 200");
-        client.global.set("auth_token", response.body.token);
     });
 %}
 
@@ -52,7 +45,7 @@ GET http://localhost:8080/api/posts/introducing-springboot
 ### Create Post
 POST http://localhost:8080/api/posts
 Content-Type: application/json
-Authorization: Bearer {{auth_token}}
+Authorization: Basic {{auth_token}}
 
 {
   "title": "Spring Boot Tips",
@@ -70,7 +63,7 @@ Authorization: Bearer {{auth_token}}
 ### Update Post
 PUT http://localhost:8080/api/posts/spring-boot-tips
 Content-Type: application/json
-Authorization: Bearer {{auth_token}}
+Authorization: Basic {{auth_token}}
 
 {
   "title": "Spring Boot Top 10 Tips",
@@ -81,30 +74,5 @@ Authorization: Bearer {{auth_token}}
 > {%
     client.test("Update post request executed successfully", function () {
         client.assert(response.status === 200, "Response status is not 200");
-    });
-%}
-
-### Get all comments for a post
-GET http://localhost:8080/api/posts/introducing-springboot/comments
-
-> {%
-    client.test("Get comments by post slug request executed successfully", function () {
-        client.assert(response.status === 200, "Response status is not 200");
-    });
-%}
-
-### Create a new comment for a post
-POST http://localhost:8080/api/posts/introducing-springboot/comments
-Content-Type: application/json
-
-{
-  "name": "siva",
-  "email": "siva@gmail.com",
-  "content": "Nice post"
-}
-
-> {%
-    client.test("Create comment request executed successfully", function () {
-        client.assert(response.status === 201, "Response status is not 201");
     });
 %}

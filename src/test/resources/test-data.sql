@@ -1,10 +1,9 @@
-delete from comments;
 delete from posts;
 delete from users;
 
 insert into users(id, email, password, name, role, created_at) values
-(1,'admin@gmail.com','$2a$10$hKDVYxLefVHV/vtuPhWD3OigtRyOykRLDdUAp80Z1crSoS1lFqaFS','Administrator', 'ROLE_ADMIN', CURRENT_TIMESTAMP),
-(2,'siva@gmail.com','$2a$10$UFEPYW7Rx1qZqdHajzOnB.VBR3rvm7OI7uSix4RadfQiNhkZOi2fi','Siva Prasad', 'ROLE_USER', CURRENT_TIMESTAMP);
+(1,'admin@gmail.com','$2a$10$I/ijZUPJEmNWmDP5GkcwaeoYkyMNW.GuqPwOMAwOWqNwiBFmhTaBK','Administrator', 'ROLE_ADMIN', CURRENT_TIMESTAMP),
+(2,'siva@gmail.com','$2a$10$I/ijZUPJEmNWmDP5GkcwaeoYkyMNW.GuqPwOMAwOWqNwiBFmhTaBK','Siva Prasad', 'ROLE_USER', CURRENT_TIMESTAMP);
 
 insert into posts(id, title, slug, content, created_by, created_at, updated_at) values
 (1,'Installing LinuxMint','installing-linuxmint','Installing LinuxMint 17', 1, '2014-01-20', now()),
@@ -18,12 +17,5 @@ insert into posts(id, title, slug, content, created_by, created_at, updated_at) 
 (9,'Deploying BroadleafCommerce 2.0 on JBoss AS 7','deploying-broadleafcommerce-20-on-jbossas7','First 2 steps are not really related to Broadleaf specific, but mentioned to make it easy to follow(copy/paste) the steps.',2, '2014-01-20', now())
 ;
 
-insert into comments(id, post_id, email, name, content, created_at, updated_at) values
-(1, 1, 'guest@gmail.com', 'Guest','sample comment 1', now(), null),
-(2, 2, 'test@gmail.com', 'Test','sample comment 2', now(), null),
-(3, 2, 'test@gmail.com', 'Test','sample comment 3', now(), now())
-;
-
 alter sequence user_id_seq restart with 101;
 alter sequence post_id_seq restart with 101;
-alter sequence comment_id_seq restart with 101;

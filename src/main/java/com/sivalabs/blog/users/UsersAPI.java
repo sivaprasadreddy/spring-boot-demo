@@ -1,7 +1,5 @@
 package com.sivalabs.blog.users;
 
-import com.sivalabs.blog.shared.entities.User;
-import com.sivalabs.blog.users.core.UserService;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;

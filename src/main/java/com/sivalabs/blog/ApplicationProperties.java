@@ -34,6 +34,7 @@ public record ApplicationProperties(
             OpenAPIProperties.Contact contact) {
 
         public record Contact(
-                @DefaultValue("SivaLabs") String name, @DefaultValue("support@sivalabs.in") String email) {}
+                @DefaultValue("SivaLabs") String name,
+                @DefaultValue("support@sivalabs.in") String email) {}
     }
 }

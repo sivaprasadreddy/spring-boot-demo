@@ -1,9 +1,9 @@
 package com.sivalabs.blog.jobs;
 
-import com.sivalabs.blog.content.ContentAPI;
+import com.sivalabs.blog.posts.ContentAPI;
 import com.sivalabs.blog.notification.EmailService;
-import com.sivalabs.blog.shared.entities.Post;
-import com.sivalabs.blog.shared.entities.User;
+import com.sivalabs.blog.posts.Post;
+import com.sivalabs.blog.users.User;
 import com.sivalabs.blog.users.UsersAPI;
 import java.time.DayOfWeek;
 import java.time.Instant;
@@ -54,12 +54,10 @@ class WeeklyEmailSenderJob {
         for (Post post : posts) {
             // Externalize base url
             String postUrl = "http://localhost:8080/blog/posts/" + post.getSlug();
-            var fragment =
-                    """
+            var fragment = """
                     <h2><a href="%s">%s</a></h2>
                     <p>%s</p>
-                    """
-                            .formatted(postUrl, post.getTitle(), post.getContent());
+                    """.formatted(postUrl, post.getTitle(), post.getContent());
             emailContent.append(fragment);
         }
         return emailContent.toString();

@@ -25,8 +25,7 @@ public class EmailService {
     @Async
     public void send(String subject, List<String> to, String content) {
         String supportEmail = properties.supportEmail();
-        String email =
-                """
+        String email = """
                 ===============================================
                 From: %s
                 To: %s
@@ -34,8 +33,7 @@ public class EmailService {
 
                 %s
                 ===============================================
-                """
-                        .formatted(supportEmail, String.join(",", to), subject, content);
+                """.formatted(supportEmail, String.join(",", to), subject, content);
         log.info(email);
     }
 }

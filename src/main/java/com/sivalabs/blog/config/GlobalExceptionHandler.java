@@ -2,8 +2,8 @@ package com.sivalabs.blog.config;
 
 import static org.springframework.http.HttpStatus.*;
 
-import com.sivalabs.blog.shared.exceptions.BadRequestException;
-import com.sivalabs.blog.shared.exceptions.ResourceNotFoundException;
+import com.sivalabs.blog.shared.BadRequestException;
+import com.sivalabs.blog.shared.ResourceNotFoundException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
@@ -35,7 +35,7 @@ class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .toList();
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(UNAUTHORIZED, String.join(", ", errors));
         problemDetail.setTitle("Bad Request");
-        return ResponseEntity.status(UNPROCESSABLE_ENTITY).body(problemDetail);
+        return ResponseEntity.status(UNPROCESSABLE_CONTENT).body(problemDetail);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
@@ -47,7 +47,7 @@ class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(BadRequestException.class)
     public ProblemDetail handle(BadRequestException e) {
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(UNPROCESSABLE_ENTITY, e.getMessage());
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(UNPROCESSABLE_CONTENT, e.getMessage());
         problemDetail.setTitle("Bad Request");
         return problemDetail;
     }

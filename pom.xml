@@ -22,7 +22,7 @@
         <springdoc-openapi.version>3.0.3</springdoc-openapi.version>
         <jjwt.version>0.13.0</jjwt.version>
         <org.mapstruct.version>1.6.3</org.mapstruct.version>
-        <p6spy-spring-boot-starter.version>1.12.1</p6spy-spring-boot-starter.version>
+        <p6spy-spring-boot-starter.version>2.0.1</p6spy-spring-boot-starter.version>
         <dockerImageName>sivaprasadreddy/spring-boot-demo</dockerImageName>
     </properties>
 

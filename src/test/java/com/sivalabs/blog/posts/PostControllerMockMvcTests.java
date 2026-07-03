@@ -48,7 +48,8 @@ class PostControllerMockMvcTests extends AbstractIT {
                 .convertTo(PagedResult.class)
                 .satisfies(p -> {
                     PagedResult<PostDto> pagedResult = (PagedResult<PostDto>) p;
-                    assertThat(pagedResult.data()).hasSize(4);
+                    assertThat(pagedResult.data()).hasSize(5);
+                    assertThat(pagedResult.totalElements()).isEqualTo(7);
                 });
     }
 
@@ -56,16 +57,16 @@ class PostControllerMockMvcTests extends AbstractIT {
     void shouldGetPostBySlug() {
         MvcTestResult result = mockMvcTester
                 .get()
-                .uri("/api/posts/{slug}", "introducing-springboot")
+                .uri("/api/posts/{slug}", "getting-started-with-spring-ai")
                 .exchange();
         assertThat(result).hasStatus(OK)
                 .bodyJson()
                 .convertTo(PostDto.class)
                 .satisfies(postDto -> {
                     assertThat(postDto).isNotNull();
-                    assertThat(postDto.id()).isEqualTo(2);
-                    assertThat(postDto.title()).isEqualTo("SpringBoot: Introducing SpringBoot");
-                    assertThat(postDto.slug()).isEqualTo("introducing-springboot");
+                    assertThat(postDto.id()).isEqualTo(1);
+                    assertThat(postDto.title()).isEqualTo("Getting Started with Spring AI: Building LLM-Powered Applications");
+                    assertThat(postDto.slug()).isEqualTo("getting-started-with-spring-ai");
                 });
     }
 
@@ -97,14 +98,14 @@ class PostControllerMockMvcTests extends AbstractIT {
     void shouldUpdatePostSuccessfully() {
         MvcTestResult result = mockMvcTester
                 .put()
-                .uri("/api/posts/{slug}", "installing-linuxmint")
+                .uri("/api/posts/{slug}", "gitops-argocd-continuous-delivery-kubernetes")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, ADMIN_AUTH_TOKEN)
                 .content("""
                         {
-                          "title":"Installing LinuxMint OS",
-                          "slug":"installing-linuxmint-os",
-                          "content":"Installing LinuxMint 22"
+                          "title":"GitOps with ArgoCD: Progressive Delivery on Kubernetes",
+                          "slug":"gitops-argocd-progressive-delivery-kubernetes",
+                          "content":"GitOps treats Git as the single source of truth for declarative infrastructure."
                         }
                         """)
                 .exchange();
@@ -113,7 +114,7 @@ class PostControllerMockMvcTests extends AbstractIT {
                 .satisfies(headers -> {
                     URI location = headers.getLocation();
                     assertThat(location).isNotNull();
-                    assertThat(location.toString()).endsWith("/api/posts/installing-linuxmint-os");
+                    assertThat(location.toString()).endsWith("/api/posts/gitops-argocd-progressive-delivery-kubernetes");
                 });
     }
 }

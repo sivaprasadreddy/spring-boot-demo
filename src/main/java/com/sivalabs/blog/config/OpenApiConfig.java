@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 class OpenApiConfig {
-    private final String securitySchemeName = "basicAuth";
+    private final String bearerAuthSchemeName = "bearerAuth";
 
     @Bean
     OpenAPI openApi() {
@@ -20,7 +20,7 @@ class OpenApiConfig {
             .addSecurityItem(new SecurityRequirement().addList("Authorization"))
             .components(
                 new Components()
-                    .addSecuritySchemes(securitySchemeName, createBasicAuthScheme())
+                    .addSecuritySchemes(bearerAuthSchemeName, createBasicAuthScheme())
             );
     }
 
@@ -35,8 +35,9 @@ class OpenApiConfig {
 
     private SecurityScheme createBasicAuthScheme() {
         return new SecurityScheme()
-                .name(securitySchemeName)
+                .name(bearerAuthSchemeName)
                 .type(SecurityScheme.Type.HTTP)
-                .scheme("basic");
+                .bearerFormat("JWT")
+                .scheme("bearer");
     }
 }

@@ -47,7 +47,7 @@ class PostController {
     }
 
     @PostMapping("")
-    @SecurityRequirement(name = "basicAuth")
+    @SecurityRequirement(name = "bearerAuth")
     ResponseEntity<Void> createPost(@Valid @RequestBody Post post) {
         var loginUserId = userContextUtils.getCurrentUserIdOrThrow();
         var user = usersAPI.findById(loginUserId).orElseThrow();
@@ -64,7 +64,7 @@ class PostController {
     }
 
     @PutMapping("/{slug}")
-    @SecurityRequirement(name = "basicAuth")
+    @SecurityRequirement(name = "bearerAuth")
     ResponseEntity<Void> updatePost(@PathVariable("slug") String slug,
                                     @Valid @RequestBody Post post) {
         log.info("Updating post with slug: '{}'", slug);

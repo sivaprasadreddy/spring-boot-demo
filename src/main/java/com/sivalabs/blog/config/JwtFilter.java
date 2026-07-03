@@ -15,11 +15,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-public class TokenAuthenticationFilter extends OncePerRequestFilter {
+public class JwtFilter extends OncePerRequestFilter {
     private final TokenHelper tokenHelper;
     private final UserDetailsService userDetailsService;
 
-    public TokenAuthenticationFilter(TokenHelper tokenHelper, UserDetailsService userDetailsService) {
+    public JwtFilter(TokenHelper tokenHelper, UserDetailsService userDetailsService) {
         this.tokenHelper = tokenHelper;
         this.userDetailsService = userDetailsService;
     }

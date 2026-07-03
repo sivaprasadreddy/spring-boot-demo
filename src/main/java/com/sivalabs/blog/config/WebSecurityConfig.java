@@ -21,10 +21,10 @@ class WebSecurityConfig {
         "/", "/favicon.ico", "/actuator/**", "/error", "/swagger-ui/**", "/v3/api-docs/**",
     };
 
-    private final TokenAuthenticationFilter authenticationFilter;
+    private final JwtFilter jwtFilter;
 
-    WebSecurityConfig(TokenAuthenticationFilter authenticationFilter) {
-        this.authenticationFilter = authenticationFilter;
+    WebSecurityConfig(JwtFilter jwtFilter) {
+        this.jwtFilter = jwtFilter;
     }
 
     @Bean
@@ -35,7 +35,7 @@ class WebSecurityConfig {
         http.httpBasic(Customizer.withDefaults());
         http.exceptionHandling(c -> c.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http.addFilterBefore(authenticationFilter, BasicAuthenticationFilter.class);
+        http.addFilterBefore(jwtFilter, BasicAuthenticationFilter.class);
 
         http.authorizeHttpRequests(c -> c.requestMatchers(PUBLIC_RESOURCES)
                 .permitAll()

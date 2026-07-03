@@ -14,8 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 class SecurityConfig {
 
     @Bean
-    TokenAuthenticationFilter tokenAuthFilter(TokenHelper tokenHelper, UserDetailsService uds) {
-        return new TokenAuthenticationFilter(tokenHelper, uds);
+    JwtFilter jwtFilter(TokenHelper tokenHelper, UserDetailsService uds) {
+        return new JwtFilter(tokenHelper, uds);
     }
 
     @Bean

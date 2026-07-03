@@ -1,0 +1,48 @@
+package com.sivalabs.blog.config;
+
+import com.sivalabs.blog.users.TokenHelper;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+import org.jspecify.annotations.NonNull;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+public class TokenAuthenticationFilter extends OncePerRequestFilter {
+    private final TokenHelper tokenHelper;
+    private final UserDetailsService userDetailsService;
+
+    public TokenAuthenticationFilter(TokenHelper tokenHelper, UserDetailsService userDetailsService) {
+        this.tokenHelper = tokenHelper;
+        this.userDetailsService = userDetailsService;
+    }
+
+    @Override
+    public void doFilterInternal(@NonNull HttpServletRequest request,
+                                 @NonNull HttpServletResponse response,
+                                 @NonNull FilterChain chain)
+            throws IOException, ServletException {
+
+        String authToken = tokenHelper.getToken(request);
+
+        if (authToken != null) {
+            String username = tokenHelper.getUsernameFromToken(authToken);
+            if (username != null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                if (tokenHelper.validateToken(authToken, userDetails)) {
+                    Authentication authentication =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            }
+        }
+        chain.doFilter(request, response);
+    }
+}

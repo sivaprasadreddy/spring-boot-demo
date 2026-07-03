@@ -1,16 +1,16 @@
-### Registration
-POST http://localhost:8080/api/users
+### Login
+POST http://localhost:8080/api/login
 Content-Type: application/json
 
 {
-  "name": "Prasad",
-  "email": "prasad@gmail.com",
-  "password": "prasad"
+  "email": "admin@gmail.com",
+  "password": "password"
 }
 
 > {%
-    client.test("Registration request executed successfully", function () {
-        client.assert(response.status === 201, "Response status is not 201");
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.global.set("auth_token", response.body.token);
     });
 %}
 
@@ -45,11 +45,12 @@ GET http://localhost:8080/api/posts/introducing-springboot
 ### Create Post
 POST http://localhost:8080/api/posts
 Content-Type: application/json
-Authorization: Basic {{auth_token}}
+#Authorization: Basic admin@gmail.com password
+#Authorization: Bearer {{auth_token}}
 
 {
   "title": "Spring Boot Tips",
-  "slug": "spring-boot-tips",
+  "slug": "aaspring-boot-tips",
   "content": "Here are my top 10 Spring Boot Tips"
 }
 
@@ -63,7 +64,8 @@ Authorization: Basic {{auth_token}}
 ### Update Post
 PUT http://localhost:8080/api/posts/spring-boot-tips
 Content-Type: application/json
-Authorization: Basic {{auth_token}}
+Authorization: Basic admin@gmail.com password
+#Authorization: Bearer {{auth_token}}
 
 {
   "title": "Spring Boot Top 10 Tips",

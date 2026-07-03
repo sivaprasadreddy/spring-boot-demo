@@ -27,10 +27,11 @@ class UserControllerTests extends AbstractIT {
 
     @Test
     void shouldGetAllUsersAsAdmin() {
+        String header = createBearerTokenHeader("admin@gmail.com");
         restTestClient
                 .get()
                 .uri("/api/users")
-                .header(HttpHeaders.AUTHORIZATION, ADMIN_AUTH_TOKEN)
+                .header(HttpHeaders.AUTHORIZATION, header)
                 .exchange()
                 .expectStatus()
                 .isOk();

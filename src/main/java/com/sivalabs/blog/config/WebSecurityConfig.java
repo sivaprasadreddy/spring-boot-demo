@@ -7,14 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -23,19 +21,21 @@ class WebSecurityConfig {
         "/", "/favicon.ico", "/actuator/**", "/error", "/swagger-ui/**", "/v3/api-docs/**",
     };
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    private final TokenAuthenticationFilter authenticationFilter;
+
+    WebSecurityConfig(TokenAuthenticationFilter authenticationFilter) {
+        this.authenticationFilter = authenticationFilter;
     }
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http) {
         http.securityMatcher("/api/**");
         http.csrf(CsrfConfigurer::disable);
         http.cors(CorsConfigurer::disable);
         http.httpBasic(Customizer.withDefaults());
         http.exceptionHandling(c -> c.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http.addFilterBefore(authenticationFilter, BasicAuthenticationFilter.class);
 
         http.authorizeHttpRequests(c -> c.requestMatchers(PUBLIC_RESOURCES)
                 .permitAll()

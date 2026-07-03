@@ -99,7 +99,7 @@ class PostControllerMockMvcTests extends AbstractIT {
                 .put()
                 .uri("/api/posts/{slug}", "installing-linuxmint")
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, USER_AUTH_TOKEN)
+                .header(HttpHeaders.AUTHORIZATION, ADMIN_AUTH_TOKEN)
                 .content("""
                         {
                           "title":"Installing LinuxMint OS",

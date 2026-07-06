@@ -46,7 +46,7 @@ class PostController {
         return ResponseEntity.ok(post);
     }
 
-    @PostMapping("")
+    @PostMapping
     @SecurityRequirement(name = "bearerAuth")
     ResponseEntity<Void> createPost(@Valid @RequestBody Post post) {
         var loginUserId = userContextUtils.getCurrentUserIdOrThrow();

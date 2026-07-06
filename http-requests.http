@@ -50,7 +50,7 @@ Content-Type: application/json
 
 {
   "title": "Spring Boot Tips",
-  "slug": "aaspring-boot-tips",
+  "slug": "spring-boot-tips",
   "content": "Here are my top 10 Spring Boot Tips"
 }
 

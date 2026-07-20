@@ -1,29 +1,25 @@
 package com.sivalabs.blog.shared;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.time.LocalDateTime;
 
 @MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
 
     @Column(name = "created_at")
+    @CreatedDate
     protected LocalDateTime createdAt;
 
     @Column(name = "updated_at")
+    @LastModifiedDate
     protected LocalDateTime updatedAt;
-
-    @PrePersist
-    void prePersist() {
-        createdAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    void preUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;

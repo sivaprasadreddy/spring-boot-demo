@@ -22,7 +22,7 @@ public class Post extends BaseEntity {
     @Column(name = "content", nullable = false)
     private String content;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
 

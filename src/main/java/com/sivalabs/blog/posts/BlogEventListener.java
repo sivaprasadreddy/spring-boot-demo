@@ -1,7 +1,7 @@
 package com.sivalabs.blog.posts;
 
 import com.sivalabs.blog.notification.EmailService;
-import org.springframework.modulith.events.ApplicationModuleListener;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,7 +12,7 @@ class BlogEventListener {
         this.emailService = emailService;
     }
 
-    @ApplicationModuleListener
+    @EventListener
     void handle(PostPublishedEvent event) {
         String subject = "New Post Published: " + event.title();
         String content = """

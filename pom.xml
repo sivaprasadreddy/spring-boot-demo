@@ -23,7 +23,7 @@
         <jjwt.version>0.13.0</jjwt.version>
         <org.mapstruct.version>1.6.3</org.mapstruct.version>
         <dockerImageName>sivaprasadreddy/spring-boot-demo</dockerImageName>
-        <bootui.version>1.16.0</bootui.version>
+        <bootui.version>1.17.0</bootui.version>
     </properties>
 
     <dependencies>

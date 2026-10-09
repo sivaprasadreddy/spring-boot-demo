@@ -16,8 +16,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v6
         with:
-          java-version: 25
-          distribution: 'temurin'
+          java-version-file: .sdkmanrc
           cache: 'maven'
 
       - name: Make Maven wrapper executable

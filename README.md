@@ -1,6 +1,6 @@
 # Spring Boot Demo
 
-A simple Blog REST API using SpringBoot.
+A simple Blog REST API using Spring Boot.
 
 ## Prerequisites
 * JDK 25

@@ -46,7 +46,7 @@ GET http://localhost:8080/api/posts/introducing-springboot
 POST http://localhost:8080/api/posts
 Content-Type: application/json
 #Authorization: Basic admin@gmail.com password
-#Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{auth_token}}
 
 {
   "title": "Spring Boot Tips",
@@ -78,3 +78,7 @@ Authorization: Basic admin@gmail.com password
         client.assert(response.status === 200, "Response status is not 200");
     });
 %}
+
+
+### GET events
+GET http://localhost:8080/api/events

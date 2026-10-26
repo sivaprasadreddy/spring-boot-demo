@@ -34,7 +34,7 @@ GET http://localhost:8080/api/posts
 %}
 
 ### GET post by slug
-GET http://localhost:8080/api/posts/introducing-springboot
+GET http://localhost:8080/api/posts/getting-started-with-spring-ai
 
 > {%
     client.test("Get post by slug request executed successfully", function () {
@@ -50,7 +50,7 @@ Content-Type: application/json
 
 {
   "title": "Spring Boot Tips",
-  "slug": "spring-boot-tips",
+  "slug": "spring-boot-tips-2",
   "content": "Here are my top 10 Spring Boot Tips"
 }
 

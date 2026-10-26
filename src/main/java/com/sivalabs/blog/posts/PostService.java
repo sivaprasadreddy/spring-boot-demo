@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -48,11 +51,13 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable("post-by-slug")
     public Optional<PostDto> findBySlug(String slug) {
         return postRepository.findBySlug(slug).map(postMapper::toPostDto);
     }
 
     @Transactional
+    @CacheEvict(value = "post-by-slug", key = "#post.slug")
     public void createPost(Post post) {
         if(this.isPostSlugExists(post.getSlug())) {
             throw new BadRequestException("Post with slug '" + post.getSlug() + "' already exists");
@@ -64,6 +69,7 @@ public class PostService {
     }
 
     @Transactional
+    @CacheEvict(value = "post-by-slug", key = "#post.slug")
     public void updatePost(Long postId, Post post) {
         var entity = postRepository
                 .findById(postId)
